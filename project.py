@@ -1,35 +1,37 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Apr 20 12:26:49 2016
+Created on Wed Apr 20 12:06:25 2016
 
-@author: rishijavia
+@author: David Ruan
 """
-
 
 from bs4 import BeautifulSoup
 import requests
-import urllib
-url = "hltv.org/?pageid=179&teamid=6290&statsfilter=9"
 
-r = requests.get("http://" +url)
-
+hltvUrl = "www.hltv.org/results/"
+r  = requests.get("http://" +hltvUrl)
 data = r.text
-
-soup = BeautifulSoup(data, "lxml")
-
+soup = BeautifulSoup(data)
+results=soup.find_all("div", {"class": "matchListBox"},limit=50)
 #print(soup.prettify())
 
-def match_class(target):                                                        
-    def do_match(tag):                                                          
-        classes = tag.get('class', [])                                          
-        return all(c in classes for c in target)                                
-    return do_match    
+print('******************')
+res=results[0]
+print(res.contents)
 
-soup = BeautifulSoup(html)  
+print(len(res))
 
-matches = soup.find_all(match_class(["covSmallHeadline"]))
-print(matches)
-for m in matches:
-    print (m)
+for i in res:
+    print(i)
 
-#covSmallHeadline
+"""
+    #find team ranking on hltv
+def getTeamRank(team):
+    r  = requests.get("http://www.hltv.org/ranking/teams/")
+    data = r.text
+    soup = BeautifulSoup(data)
+    div=soup.div
+    logo = div.attrs['ranking-logo']
+    
+getTeamRank('Natus Vincere')
+
+"""
