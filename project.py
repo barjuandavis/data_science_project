@@ -8,25 +8,39 @@ Created on Wed Apr 20 12:06:25 2016
 from bs4 import BeautifulSoup
 import requests
 
-hltvUrl = "www.hltv.org/results/"
+def extractDataIntoCondesedList(match):
+    #match is a list
+    thisMatch=match[2]
+    thisMap=(thisMatch.replace(' - ', ' ').split(' '))[0]
+    firstTeam=(thisMatch.replace(' - ', ' ').split(' '))[1]
+    print(thisMap)
+    print(firstTeam)
+    
+    #print("Played on "+match[2])
+    
+hltvUrl = "http://www.hltv.org/results/"
 gosuUrl = ""
-r  = requests.get("http://" +hltvUrl)
+fnaticStatsUrl = "http://www.hltv.org/?pageid=179&teamid=4991"
+r  = requests.get(hltvUrl)
 data = r.text
 soup = BeautifulSoup(data)
-print(soup.prettify())
-
-
+#print(soup.prettify())
+print()
 results=soup.find_all("div", {"class": "matchListBox"},limit=50)
-print(soup.prettify())
+for i in results:
+    if "mousesports" in i.text:
+        listo=(str(i.text).splitlines())
+        print(listo)
+        
+        extractDataIntoCondesedList(listo)
+        #gather data
+        
+        
+        
 
-print('******************')
-res=results[0]
-print(res)
 
 
 """
-print(len(res))
-
 for i in res:
     print(i)
 
