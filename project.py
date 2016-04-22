@@ -26,8 +26,14 @@ def extractDataIntoCondesedList(match):
         print(secondScore)
         if (firstScore>secondScore):
             print(firstTeam+' beat ' + secondTeam + ' ' + str(firstScore) + '-' + str(secondScore) +' on '+thisMap)
+            #convert into csv format
+            csv=str(firstTeam + ',' + secondTeam + ',' + str(firstScore) + ',' + str(secondScore) + ',' + thisMap)
         else:
             print(secondTeam+' beat ' + firstTeam + ' ' + str(secondScore) + '-' + str(firstScore) +' on '+thisMap)
+            csv=str(secondTeam + ',' + firstTeam + ',' + str(secondScore) + ',' + str(firstScore) + ',' + thisMap)
+            #convert to csv format
+        print(csv)
+        
 
 hltvUrl = "http://www.hltv.org/results/"
 gosuUrl = ""
@@ -39,6 +45,7 @@ soup = BeautifulSoup(data)
 print()
 results=soup.find_all("div", {"class": "matchListBox"},limit=50)
 for i in results:
+    #to search for a specific team, use if 'teamname' in i.text:
     result=(str(i.text).splitlines())
     #gather data
     extractDataIntoCondesedList(result)
