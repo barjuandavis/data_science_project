@@ -8,7 +8,7 @@ Created on Wed Apr 20 12:06:25 2016
 from bs4 import BeautifulSoup
 import requests
 
-def extractDataIntoCondesedList(match):
+def extractDataIntoCondensedList(match):
     #match is a list
     thisMap=(match[2].replace(' - ', ' ').split(' '))[0]
     firstTeam=(match[2].replace(' - ', ' ').split(' '))[1]
@@ -25,11 +25,11 @@ def extractDataIntoCondesedList(match):
         print(firstScore)
         print(secondScore)
         if (firstScore>secondScore):
-            print(firstTeam+' beat ' + secondTeam + ' ' + str(firstScore) + '-' + str(secondScore) +' on '+thisMap)
+            print(firstTeam+' beat ' + secondTeam + ' ' + str(firstScore) + '-' + str(secondScore) + ' on '+ thisMap)
             #convert into csv format
             csv=str(firstTeam + ',' + secondTeam + ',' + str(firstScore) + ',' + str(secondScore) + ',' + thisMap)
         else:
-            print(secondTeam+' beat ' + firstTeam + ' ' + str(secondScore) + '-' + str(firstScore) +' on '+thisMap)
+            print(secondTeam+' beat ' + firstTeam + ' ' + str(secondScore) + '-' + str(firstScore) + ' on '+ thisMap)
             csv=str(secondTeam + ',' + firstTeam + ',' + str(secondScore) + ',' + str(firstScore) + ',' + thisMap)
             #convert to csv format
         print(csv)
@@ -48,7 +48,7 @@ for i in results:
     #to search for a specific team, use if 'teamname' in i.text:
     result=(str(i.text).splitlines())
     #gather data
-    extractDataIntoCondesedList(result)
+    extractDataIntoCondensedList(result)
     
 """
 for i in res:
