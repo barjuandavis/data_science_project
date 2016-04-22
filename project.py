@@ -10,13 +10,24 @@ import requests
 
 def extractDataIntoCondesedList(match):
     #match is a list
-    thisMatch=match[2]
-    thisMap=(thisMatch.replace(' - ', ' ').split(' '))[0]
-    firstTeam=(thisMatch.replace(' - ', ' ').split(' '))[1]
-    print(thisMap)
-    print(firstTeam)
-    
-    #print("Played on "+match[2])
+    thisMap=(match[2].replace(' - ', ' ').split(' '))[0]
+    firstTeam=(match[2].replace(' - ', ' ').split(' '))[1]
+    secondTeam=(match[13].strip())
+    firstScore=int((match[7].replace(' - ', ' ').split(' '))[0])
+    secondScore=int((match[7].replace(' - ', ' ').split(' '))[1])
+    #do not include anything other than best of 1's
+    if (firstScore+secondScore>=16):
+        print()
+        print(match)
+        print(thisMap)
+        print(firstTeam)
+        print(secondTeam)
+        print(firstScore)
+        print(secondScore)
+        if (firstScore>secondScore):
+            print(firstTeam+' beat ' + secondTeam + ' ' + str(firstScore) + '-' + str(secondScore))
+        else:
+            print(secondTeam+' beat ' + firstTeam + ' ' + str(secondScore) + '-' + str(firstScore))
     
 hltvUrl = "http://www.hltv.org/results/"
 gosuUrl = ""
@@ -28,18 +39,10 @@ soup = BeautifulSoup(data)
 print()
 results=soup.find_all("div", {"class": "matchListBox"},limit=50)
 for i in results:
-    if "mousesports" in i.text:
-        listo=(str(i.text).splitlines())
-        print(listo)
-        
-        extractDataIntoCondesedList(listo)
-        #gather data
-        
-        
-        
-
-
-
+    result=(str(i.text).splitlines())
+    #gather data
+    extractDataIntoCondesedList(result)
+    
 """
 for i in res:
     print(i)
