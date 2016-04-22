@@ -25,10 +25,10 @@ def extractDataIntoCondesedList(match):
         print(firstScore)
         print(secondScore)
         if (firstScore>secondScore):
-            print(firstTeam+' beat ' + secondTeam + ' ' + str(firstScore) + '-' + str(secondScore))
+            print(firstTeam+' beat ' + secondTeam + ' ' + str(firstScore) + '-' + str(secondScore) +' on '+thisMap)
         else:
-            print(secondTeam+' beat ' + firstTeam + ' ' + str(secondScore) + '-' + str(firstScore))
-    
+            print(secondTeam+' beat ' + firstTeam + ' ' + str(secondScore) + '-' + str(firstScore) +' on '+thisMap)
+
 hltvUrl = "http://www.hltv.org/results/"
 gosuUrl = ""
 fnaticStatsUrl = "http://www.hltv.org/?pageid=179&teamid=4991"
