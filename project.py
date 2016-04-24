@@ -5,7 +5,9 @@ Created on Wed Apr 20 12:06:25 2016
 @author: David Ruan
 """
 from bs4 import BeautifulSoup
-import requests
+import requests, csv
+
+csgoData=[]
 
 def extractDataIntoCondensedList(match):
     line=''
@@ -23,14 +25,17 @@ def extractDataIntoCondensedList(match):
             line+=str('\n' + firstTeam + ',' + secondTeam + ',' + str(firstScore) + ',' + str(secondScore) + ',' + thisMap)
         else:
             #print(secondTeam+' beat ' + firstTeam + ' ' + str(secondScore) + '-' + str(firstScore) +' on '+thisMap)
-            line+=str('\n' + secondTeam + ',' + firstTeam + ',' + str(secondScore) + ',' + str(firstScore) + ',' + thisMap)
             #convert to csv format
+            line+=str('\n' + secondTeam + ',' + firstTeam + ',' + str(secondScore) + ',' + str(firstScore) + ',' + thisMap)
+#    else:
+#        print("Not a Best of 1")
+#        print(match)
     return line
     
 #Only run this if you want new data (Will overwrite the previoius csv file)
 def scrape(pages):
     print("Scraping. Please be patient")
-    csv=''
+    csvContents=''
     for i in range(pages):
         hltvUrl = "http://www.hltv.org/results/"
         if i==0:
@@ -45,7 +50,19 @@ def scrape(pages):
         results=soup.find_all("div", {"class": "matchListBox"},limit=50)
         for j in results:
             result=(str(j.text).splitlines())
-            csv+=extractDataIntoCondensedList(result)
-    csvFile.write(csv)
+            csvContents+=extractDataIntoCondensedList(result)
+    csvFile.write(csvContents)
+
+#view csv contents
+def readCsv(fileName):
+    with open(fileName, 'r') as f:
+        reader = csv.reader(f, delimiter=',')
+        next(reader)
+        rows = [r for r in reader]
+    return rows
+
+#def deepScrape(matchPage):
+    
 
 scrape(100)
+csgoData = readCsv('csgo_results.csv')
