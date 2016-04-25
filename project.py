@@ -58,16 +58,13 @@ def extractDataIntoCondensedList(match):
     secondTeam=(match[13].strip())
     firstScore=int((match[7].replace(' - ', ' ').split(' '))[0])
     secondScore=int((match[7].replace(' - ', ' ').split(' '))[1])
-    #Get team1HasHigherRating
-    #Get team1winRateonMap
+    team1Won=True
     #do not include anything other than best of 1's
     if (firstScore+secondScore>=16):
-        if (firstScore>secondScore):
-            #convert into csv format
-            line+=str('\n' + firstTeam + ',' + secondTeam + ',' + str(firstScore) + ',' + str(secondScore) + ',' + thisMap)
-        else:
-            #convert to csv format
-            line+=str('\n' + secondTeam + ',' + firstTeam + ',' + str(secondScore) + ',' + str(firstScore) + ',' + thisMap)
+        if (secondScore>firstScore):
+            team1Won=False
+        line+=('\n' + firstTeam + ',' + secondTeam + ',' + str(firstScore) + ',' + str(secondScore) + ',' + thisMap + ',' + str(team1Won))
+        
     return line
     
 #Only run this if you want new data (Will overwrite the previoius csv file)
@@ -78,7 +75,7 @@ def scrape(pages):
         hltvUrl = "http://www.hltv.org/results/"
         if i==0:
             csvFile = open("csgo_results.csv",'w')
-            csvFile.write("Winning Team, Losing Team, Winning Score, Losing Score, Map Played, Team1HasHigherRating, Team1HasHigherMapWinRate")
+            csvFile.write("Winning Team, Losing Team, Winning Score, Losing Score, Map Played, Team1Won")
         if i>0:
             hltvUrl+=(str((i)*50)+'/')
         print(hltvUrl)
@@ -91,7 +88,9 @@ def scrape(pages):
             csvContents+=extractDataIntoCondensedList(result)
     csvFile.write(csvContents)
     csvFile.close()
-
+    print('Filtering CSV')
+    filterCsv()
+    
 #view csv contents
 def readCsv(fileName):
     with open(fileName, 'r') as f:
@@ -118,7 +117,7 @@ def returnMapStats(t, m):
             data.append(first_death)
             return data
             
-def filterCSV():    
+def filterCsv():    
     """
     What new CSV should look like:
     Team1Name, Team2Name, MapName, TeamWhoWonTheGame(basically team1 based on David's data),
@@ -128,19 +127,20 @@ def filterCSV():
     """
     og_data = readCsv("csgo_results.csv")
     csv=''
-    csvFile = open("filterd_top20.csv",'w')
-    csvFile.write("Team 1,Team 2,Map,Winner,Team 1 Rating,Team 2 Rating,Team 1 KD,Team 2 KD,Team 1 Map Win %,Team 2 Map Win %,Team 1 Pistol Round Win %,Team 2 Pistol Round Win %,Team 1 first kill win %,Team 2 first kill win %,Team 1 first death win %,Team 2 first death win %")
+    csvFile = open("filtered_top20.csv",'w')
+    csvFile.write("Team 1,Team 2,Map,Team 1 Won,Team 1 Rating,Team 2 Rating,Team 1 KD,Team 2 KD,Team 1 Map Win %,Team 2 Map Win %,Team 1 Pistol Round Win %,Team 2 Pistol Round Win %,Team 1 first kill win %,Team 2 first kill win %,Team 1 first death win %,Team 2 first death win %")
     for data in og_data:
         if (isTop20(data[0]) and isTop20(data[1]) and isMap(data[4])):
             team1name = data[0]
             team2name = data[1]
             #update this if we change format of our og data
-            teamwon = data[0]
+            
             map_played = data[4]
             team1rating = str(get_rating(team1name))
             team2rating = str(get_rating(team2name))
             team1kd = str(get_kd(team1name))
             team2kd = str(get_kd(team2name))
+            team1Won = str(data[5])
             
             map_data1 = returnMapStats(team1name, map_played)
             map_data2 = returnMapStats(team2name, map_played)
@@ -152,7 +152,7 @@ def filterCSV():
             team2firstkill = map_data2[2]
             team1firstdeath = map_data1[3]
             team2firstdeath = map_data2[3]
-            line = '\n' + team1name + ',' + team2name + ',' + map_played + ',' + teamwon + ',' + team1rating + ',' + team2rating + ',' + team1kd + ',' + team2kd + ',' + team1mapwin + ',' + team2mapwin + ',' + team1pistol + ',' + team2pistol + ',' + team1firstkill + ',' + team2firstkill + ',' + team1firstdeath + ',' + team2firstdeath
+            line = '\n' + team1name + ',' + team2name + ',' + map_played + ',' + team1Won + ',' + team1rating + ',' + team2rating + ',' + team1kd + ',' + team2kd + ',' + team1mapwin + ',' + team2mapwin + ',' + team1pistol + ',' + team2pistol + ',' + team1firstkill + ',' + team2firstkill + ',' + team1firstdeath + ',' + team2firstdeath
             csv += line
     csvFile.write(csv)
 
@@ -215,7 +215,6 @@ def getDataReady():
     inputs = [(c,a) for c,a in zip(dictio, winner)]
     return inputs
          
-    
 """
 Team1name,Team2name,MapName,Team1wonthegame,Team1hasHigherRating,Team1hasHigherKD
 
