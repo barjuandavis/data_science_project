@@ -214,13 +214,3 @@ def getDataReady():
         
     inputs = [(c,a) for c,a in zip(dictio, winner)]
     return inputs
-         
-    
-"""
-Team1name,Team2name,MapName,Team1wonthegame,Team1hasHigherRating,Team1hasHigherKD
-
-Hardcode rankings"""
-
-inputs = [
-        ({'Map':'','Team1hashigherrating':'','Team1hasHigherAverageKD':'','Team1HasHigherMapWinRateOnMap':'','Team1HasHigherPistolRoundWinRateOnMap':''},   False),
-        ({'Map':'','Team1hashigherrating':'','Team1hasHigherAverageKD':'','Team1WinHasHigherWinRate':''},   False)]
