@@ -220,8 +220,6 @@ def getDataReady():
     inputs = [(c,a) for c,a in zip(dictio, winner)]
     return inputs
 
-def check():
-    scrape_map_stats()
 #Main function to run all the code by itslef, add number of pages to scrape
 def main(pages):
     scrape(pages)
