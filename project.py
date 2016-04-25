@@ -61,13 +61,13 @@ def extractDataIntoCondensedList(match):
     #Get team1HasHigherRating
     #Get team1winRateonMap
     #do not include anything other than best of 1's
+    
     if (firstScore+secondScore>=16):
         if (firstScore>secondScore):
-            #convert into csv format
-            line+=str('\n' + firstTeam + ',' + secondTeam + ',' + str(firstScore) + ',' + str(secondScore) + ',' + thisMap)
+            winner = firstTeam
         else:
-            #convert to csv format
-            line+=str('\n' + secondTeam + ',' + firstTeam + ',' + str(secondScore) + ',' + str(firstScore) + ',' + thisMap)
+            winner = secondTeam
+        line+=str('\n' + secondTeam + ',' + firstTeam + ',' + winner + ',' + str(secondScore) + ',' + str(firstScore) + ',' + thisMap)
     return line
     
 #Only run this if you want new data (Will overwrite the previoius csv file)
@@ -78,7 +78,7 @@ def scrape(pages):
         hltvUrl = "http://www.hltv.org/results/"
         if i==0:
             csvFile = open("csgo_results.csv",'w')
-            csvFile.write("Winning Team, Losing Team, Winning Score, Losing Score, Map Played, Team1HasHigherRating, Team1HasHigherMapWinRate")
+            csvFile.write("Team 1, Team 2, Winning Team, Winning Score, Losing Score, Map Played")
         if i>0:
             hltvUrl+=(str((i)*50)+'/')
         print(hltvUrl)
@@ -131,12 +131,12 @@ def filterCSV():
     csvFile = open("filterd_top20.csv",'w')
     csvFile.write("Team 1,Team 2,Map,Winner,Team 1 Rating,Team 2 Rating,Team 1 KD,Team 2 KD,Team 1 Map Win %,Team 2 Map Win %,Team 1 Pistol Round Win %,Team 2 Pistol Round Win %,Team 1 first kill win %,Team 2 first kill win %,Team 1 first death win %,Team 2 first death win %")
     for data in og_data:
-        if (isTop20(data[0]) and isTop20(data[1]) and isMap(data[4])):
+        if (isTop20(data[0]) and isTop20(data[1]) and isMap(data[5])):
             team1name = data[0]
             team2name = data[1]
             #update this if we change format of our og data
-            teamwon = data[0]
-            map_played = data[4]
+            teamwon = data[2]
+            map_played = data[5]
             team1rating = str(get_rating(team1name))
             team2rating = str(get_rating(team2name))
             team1kd = str(get_kd(team1name))
@@ -211,7 +211,10 @@ def getDataReady():
                        "Team 1 has higher win after first kill":firstkill, 
                        "Team 1 has higher win after first death":firstdeath})
         #need to change this part after changing og data format:
-        winner.append(True)
+        if data[i][0] == data[i][3]:
+            winner.append(True)
+        else:
+            winner.append(False)
         
     inputs = [(c,a) for c,a in zip(dictio, winner)]
     return inputs
