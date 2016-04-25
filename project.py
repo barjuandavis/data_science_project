@@ -124,15 +124,17 @@ def filterCSV():
     Team1Name, Team2Name, MapName, TeamWhoWonTheGame(basically team1 based on David's data),
     Team1Rating, Team2Rating, Team1KD, Team2KD, Team1MapWin%, Team2MapWin%,
     Team1PistolRound%, Team2PistolRound%, Team1first_kill, Team2first_kill, 
-    Team1first_death, Team2first_death"""
+    Team1first_death, Team2first_death
+    """
     og_data = readCsv("csgo_results.csv")
     csv=''
     csvFile = open("filterd_top20.csv",'w')
-    csvFile.write("Team 1, Team 2, Map, Winner, Team 1 Rating, Team 2 Rating, Team 1 KD, Team 2 KD, Team 1 Map Win %, Team 2 Map Win %, Team 1 Pistol Round Win %, Team 2 Pistol Round Win %, Team 1 first kill win %, Team 2 first kill win %, Team 1 first death win %, Team 2 first death win %")
+    csvFile.write("Team 1,Team 2,Map,Winner,Team 1 Rating,Team 2 Rating,Team 1 KD,Team 2 KD,Team 1 Map Win %,Team 2 Map Win %,Team 1 Pistol Round Win %,Team 2 Pistol Round Win %,Team 1 first kill win %,Team 2 first kill win %,Team 1 first death win %,Team 2 first death win %")
     for data in og_data:
         if (isTop20(data[0]) and isTop20(data[1]) and isMap(data[4])):
             team1name = data[0]
             team2name = data[1]
+            #update this if we change format of our og data
             teamwon = data[0]
             map_played = data[4]
             team1rating = str(get_rating(team1name))
@@ -153,7 +155,66 @@ def filterCSV():
             line = '\n' + team1name + ',' + team2name + ',' + map_played + ',' + teamwon + ',' + team1rating + ',' + team2rating + ',' + team1kd + ',' + team2kd + ',' + team1mapwin + ',' + team2mapwin + ',' + team1pistol + ',' + team2pistol + ',' + team1firstkill + ',' + team2firstkill + ',' + team1firstdeath + ',' + team2firstdeath
             csv += line
     csvFile.write(csv)
+
+def getVariables():
+    with open("filterd_top20.csv", 'r') as f:
+        reader = csv.reader(f, delimiter=',')
+        rows = [r for r in reader]
+        return rows[0]
+        
+def getDataReady():
+    variables = getVariables()
+    data = readCsv("filterd_top20.csv")
+    dictio = []
+    winner = []
+    for i in range(len(data)):
+        #check if team1 has higher rating:
+        if data[i][4] > data[i][5]:
+            rating = 'y'
+        else:
+            rating = 'n'
+        
+        #check if team1 has higher kd:
+        if data[i][6] > data[i][7]:
+            kd = 'y'
+        else:
+            kd = 'n'
+        
+        #check if team1 has higher map win %:
+        if data[i][8] > data[i][9]:
+            mapwin = 'y'
+        else:
+            mapwin = 'n'
+        
+        #check if team1 has higher pistol win %:
+        if data[i][10] > data[i][11]:
+            pistol = 'y'
+        else:
+            pistol = 'n'
             
+        #check if team1 has higher win after first_kill:
+        if data[i][12] > data[i][13]:
+            firstkill = 'y'
+        else:
+            firstkill = 'n'
+        
+        #check if team1 has higher win after first_death:
+        if data[i][14] > data[i][15]:
+            firstdeath = 'y'
+        else:
+            firstdeath = 'n'
+            
+        dictio.append({"Team 1":data[i][0], "Team 2":data[i][1], "Map":data[i][2],
+                       "Team 1 has higher rating":rating, "Team 1 has higher kd":kd, 
+                       "Team 1 has higher map win %":mapwin, "Team 1 has higher pistol win %": pistol,
+                       "Team 1 has higher win after first kill":firstkill, 
+                       "Team 1 has higher win after first death":firstdeath})
+        #need to change this part after changing og data format:
+        winner.append(True)
+        
+    inputs = [(c,a) for c,a in zip(dictio, winner)]
+    return inputs
+         
     
 """
 Team1name,Team2name,MapName,Team1wonthegame,Team1hasHigherRating,Team1hasHigherKD
