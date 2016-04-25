@@ -83,3 +83,4 @@ def scrape_map_stats():
             csv += line
 
     csvFile.write(csv)
+    csvFile.close

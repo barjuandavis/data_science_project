@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
+from map_stats import scrape_map_stats
 import requests, csv
 
 #Hardcoded Data
@@ -218,3 +219,15 @@ def getDataReady():
         
     inputs = [(c,a) for c,a in zip(dictio, winner)]
     return inputs
+
+def check():
+    scrape_map_stats()
+#Main function to run all the code by itslef, add number of pages to scrape
+def main(pages):
+    scrape(pages)
+    print("**********Scraping Map Stats now**********")
+    scrape_map_stats()
+    print("**********Filtering Data now**********")
+    filterCSV()
+    print("**********Generating Data now**********")
+    getDataReady()    
