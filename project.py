@@ -155,6 +155,7 @@ def filterCSV():
             line = '\n' + team1name + ',' + team2name + ',' + map_played + ',' + teamwon + ',' + team1rating + ',' + team2rating + ',' + team1kd + ',' + team2kd + ',' + team1mapwin + ',' + team2mapwin + ',' + team1pistol + ',' + team2pistol + ',' + team1firstkill + ',' + team2firstkill + ',' + team1firstdeath + ',' + team2firstdeath
             csv += line
     csvFile.write(csv)
+    csvFile.close
 
 def getVariables():
     with open("filterd_top20.csv", 'r') as f:
