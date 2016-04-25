@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 from map_stats import scrape_map_stats
+from decision_trees import build_tree_id3
+from decision_trees import classify
+import pprint
 import requests, csv
 
 #Hardcoded Data
@@ -165,7 +168,6 @@ def getVariables():
         return rows[0]
         
 def getDataReady():
-    variables = getVariables()
     data = readCsv("filterd_top20.csv")
     dictio = []
     winner = []
@@ -206,7 +208,7 @@ def getDataReady():
         else:
             firstdeath = 'n'
             
-        dictio.append({"Team 1":data[i][0], "Team 2":data[i][1], "Map":data[i][2],
+        dictio.append({"Map":data[i][2],
                        "Team 1 has higher rating":rating, "Team 1 has higher kd":kd, 
                        "Team 1 has higher map win %":mapwin, "Team 1 has higher pistol win %": pistol,
                        "Team 1 has higher win after first kill":firstkill, 
@@ -220,12 +222,58 @@ def getDataReady():
     inputs = [(c,a) for c,a in zip(dictio, winner)]
     return inputs
 
+def userInputStats(team1, team2, m):
+    map_data1 = returnMapStats(team1, m)
+    map_data2 = returnMapStats(team2, m)
+    kd = 'n'
+    if (get_kd(team1) > get_kd(team2)):
+        kd = 'y'
+        
+    map_win = 'n'
+    if (float(map_data1[0]) > float(map_data2[0])):
+        map_win = 'y'
+    
+    pistol = 'n'
+    if (float(map_data1[1]) > float(map_data2[1])):
+        pistol = 'y'
+        
+    rating = 'n'
+    if (get_rating(team1) > get_rating(team2)):
+        rating = 'y'
+
+    first = 'n'
+    if (float(map_data1[2]) > float(map_data2[2])):
+        first = 'y'    
+    
+    death = 'n'
+    if (float(map_data1[3]) > float(map_data2[3])):
+        death = 'y'
+        
+    output = {
+    'Team 1 has higher kd': kd,
+    'Team 1 has higher map win %': map_win,
+    'Team 1 has higher pistol win %': pistol,
+    'Team 1 has higher rating':rating,
+    'Team 1 has higher win after first death':death,
+    'Team 1 has higher win after first kill':first
+    }
+    return output
+    
+    
 #Main function to run all the code by itslef, add number of pages to scrape
-def main(pages):
-    scrape(pages)
+def main(pages, team1, team2, m):
+    #scrape(pages)
     print("**********Scraping Map Stats now**********")
-    scrape_map_stats()
+    #scrape_map_stats()
     print("**********Filtering Data now**********")
-    filterCSV()
+    #filterCSV()
     print("**********Generating Data now**********")
-    getDataReady()    
+    data = getDataReady()
+    tree = build_tree_id3(data)
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(tree)
+    
+    boolean = {True : team1, False : team2}
+    print("The team who would win is {}.".format(boolean[classify(tree,userInputStats(team1, team2, m))]))    
+    
+    
