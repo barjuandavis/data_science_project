@@ -7,7 +7,7 @@ Created on Wed Apr 20 12:06:25 2016
 from bs4 import BeautifulSoup
 import requests, csv
 
-#Harcoded Data
+#Hardcoded Data
 teams=[	  {'Team Name':'Natus Vincere','Team Rank':1,'Team id':4608,'KD':1.07},
 		  {'Team Name':'Luminosity','Team Rank':2,'Team id':6290,'KD':1.14},
 		  {'Team Name':'Fnatic','Team Rank':3,'Team id':4991,'KD':1.12},
@@ -30,6 +30,12 @@ teams=[	  {'Team Name':'Natus Vincere','Team Rank':1,'Team id':4608,'KD':1.07},
 		  {'Team Name':'E-frag.net','Team Rank':20,'Team id':6226,'KD':1.09}]
     
 csgoData=[]
+
+def isTop20(input):
+    for i in range(len(teams)):
+        if (input == teams[i]['Team Name']):
+            return True
+    return False
 
 def extractDataIntoCondensedList(match):
     line=''
@@ -71,6 +77,7 @@ def scrape(pages):
             result=(str(j.text).splitlines())
             csvContents+=extractDataIntoCondensedList(result)
     csvFile.write(csvContents)
+    csvFile.close()
 
 #view csv contents
 def readCsv(fileName):
@@ -79,7 +86,37 @@ def readCsv(fileName):
         next(reader)
         rows = [r for r in reader]
     return rows
-
+    
+def returnMapStats(t, m):
+    rows=readCsv('map_data.csv')
+    data = []
+    for i in range(len(rows)):
+        if ((t == rows[i][0]) and (m == rows[i][1])):
+            win_percent = rows[i][2]
+            data.append(win_percent)
+            
+            pistol_percent = rows[i][3]
+            data.append(pistol_percent)
+            
+            first_kill = rows[i][4]
+            data.append(first_kill)
+            
+            first_death = rows[i][5]
+            data.append(first_death)
+            return data
+            
+def filterCsv():
+    orig = readCsv("csgo_results.csv")
+    new=''
+    length=0
+    for i in orig:
+        if (isTop20(i[0]) and isTop20(i[1])):
+            #print(i[0]+' and '+i[1]+' are both in top 20')
+            length+=1
+    print(length)
+    #top20_csv = open("top20_csgo_results.csv", 'w')
+    
+filterCsv()
 #def deepScrape(matchPage):
 
 """
