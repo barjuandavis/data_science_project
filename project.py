@@ -9,7 +9,7 @@ import requests, csv
 #Hardcoded Data
 teams=[	  {'Team Name':'Natus Vincere','Team Rank':1,'Team id':4608,'KD':1.07, 'Rating':1.03},
 		  {'Team Name':'Luminosity','Team Rank':2,'Team id':6290,'KD':1.14, 'Rating':0},
-		  {'Team Name':'Fnatic','Team Rank':3,'Team id':4991,'KD':1.12, 'Rating':1.06},
+		  {'Team Name':'fnatic','Team Rank':3,'Team id':4991,'KD':1.12, 'Rating':1.06},
 		  {'Team Name':'Astralis','Team Rank':4,'Team id':6665,'KD':1.11, 'Rating':0},
 		  {'Team Name':'NiP','Team Rank':5,'Team id':4411,'KD':1.16, 'Rating':1.09},
 		  {'Team Name':'EnVyUs','Team Rank':6,'Team id':5991,'KD':1.07, 'Rating':1.04},
@@ -262,6 +262,15 @@ def userInputStats(team1, team2, m):
     
 #Main function to run all the code by itslef, add number of pages to scrape
 def main(pages, team1, team2, m):
+    if not(isTop20(team1)):
+        print("Team 1 is not a top 20 team")
+        return
+    if not(isTop20(team2)):
+        print("Team 2 is not a top 20 team")
+        return 
+    if not(isMap(m)):
+        print("The map is not in our pool")
+        return
     #scrape(pages)
     print("**********Scraping Map Stats now**********")
     #scrape_map_stats()
@@ -270,8 +279,6 @@ def main(pages, team1, team2, m):
     print("**********Generating Data now**********")
     data = getDataReady()
     tree = build_tree_id3(data)
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(tree)
     
     boolean = {True : team1, False : team2}
     print("The team who would win is {}.".format(boolean[classify(tree,userInputStats(team1, team2, m))]))    
