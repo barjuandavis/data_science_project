@@ -53,7 +53,7 @@ def scrape_map_stats():
             map_id = maps[j]['id']
             hltvUrl = "http://www.hltv.org/?pageid=192&teamid=%d&mapid=%d" % (team_id, map_id)
             hltvUrl2 = "http://www.hltv.org/?pageid=192&teamid=%d&mapid=%d" % (team_id, map_id)
-            print("Hitting: " + hltvUrl)
+            print("Getting data from: " + hltvUrl)
             r  = requests.get(hltvUrl)
             data = r.text
             soup = BeautifulSoup(data,"lxml")
