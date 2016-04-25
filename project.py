@@ -35,6 +35,7 @@ def isTop20(input):
     for i in range(len(teams)):
         if (input == teams[i]['Team Name']):
             return True
+    return False
 
 def extractDataIntoCondensedList(match):
     line=''
@@ -84,6 +85,28 @@ def readCsv(fileName):
         next(reader)
         rows = [r for r in reader]
     return rows
+    
+def returnMapStats(t, m):
+    import csv
+    with open('map_data.csv', 'r') as f:
+         reader = csv.reader(f, delimiter=',')
+         next(reader)
+         rows = [r for r in reader]
+    data = []
+    for i in range(len(rows)):
+        if ((t == rows[i][0]) and (m == rows[i][1])):
+            win_percent = rows[i][2]
+            data.append(win_percent)
+            
+            pistol_percent = rows[i][3]
+            data.append(pistol_percent)
+            
+            first_kill = rows[i][4]
+            data.append(first_kill)
+            
+            first_death = rows[i][5]
+            data.append(first_death)
+            return data
 
 #def deepScrape(matchPage):
 

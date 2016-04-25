@@ -43,7 +43,7 @@ maps=[
 ]
 
 
-def scrape():
+def scrape_map_stats():
     csv = ''
     csvFile = open("map_data.csv",'w')
     csvFile.write("Team, Map, Win %, Pistol Rounds Win %, Round win % after getting first kill, Round win % after receiving first death")

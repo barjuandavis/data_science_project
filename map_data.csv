@@ -25,7 +25,7 @@ Astralis,mirage,61.04,43.75,82.4,33.7
 Astralis,inferno,53.31,40,74.6,30.0
 Astralis,cache,47.14,45.83,67.8,29.3
 Astralis,train,53.13,40.91,71.2,32.5
-Astralis,cobblestone,0,0,N,N
+Astralis,cobblestone,0,0,0,0
 Astralis,overpass,58.29,63.33,76.7,35.7
 NiP,dust2,54.93,53.79,78.7,28.4
 NiP,mirage,51.24,52.05,74.8,27.8
@@ -76,7 +76,7 @@ CLG,cache,49.28,56.48,72.2,26.5
 CLG,train,53.95,57.89,75.7,31.4
 CLG,cobblestone,52.34,53.77,73.1,27.9
 CLG,overpass,52.49,46.05,77.3,26.4
-GODSENT,dust2,0,0,N,N
+GODSENT,dust2,0,0,0,0
 GODSENT,mirage,47.14,20,65.7,26.8
 GODSENT,inferno,65.38,100,82.2,42.4
 GODSENT,cache,45.95,33.33,71.4,23.0
@@ -124,14 +124,14 @@ FaZe,inferno,59.14,62.5,77.4,36.9
 FaZe,cache,46.72,75,71.0,22.6
 FaZe,train,44.77,35.71,62.7,23.0
 FaZe,cobblestone,45,60,64.4,26.2
-FaZe,overpass,0,0,N,N
+FaZe,overpass,0,0,0,0
 Gambit,dust2,43.87,50,71.6,18.5
 Gambit,mirage,53.02,50,74.6,31.0
 Gambit,inferno,58,68.75,75.8,35.2
 Gambit,cache,50.47,58.33,71.0,31.7
 Gambit,train,53.25,55,75.6,32.2
 Gambit,cobblestone,46.72,38.89,72.8,24.8
-Gambit,overpass,0,0,N,N
+Gambit,overpass,0,0,0,0
 E-frag.net,dust2,58.37,53.03,78.2,35.5
 E-frag.net,mirage,52.98,58.82,75.3,28.9
 E-frag.net,inferno,54.36,47.73,73.5,32.6
