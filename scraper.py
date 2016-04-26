@@ -84,3 +84,40 @@ def scrape_map_stats():
 
     csvFile.write(csv)
     csvFile.close
+
+def extractDataIntoCondensedList(match):
+    line=''
+    thisMap=(match[2].replace(' - ', ' ').split(' '))[0]
+    firstTeam=(match[2].replace(' - ', ' ').split(' '))[1]
+    secondTeam=(match[13].strip())
+    firstScore=int((match[7].replace(' - ', ' ').split(' '))[0])
+    secondScore=int((match[7].replace(' - ', ' ').split(' '))[1])
+    
+    if (firstScore+secondScore>=16):
+        if (firstScore>secondScore):
+            winner = firstTeam
+        else:
+            winner = secondTeam
+        line+=str('\n' + secondTeam + ',' + firstTeam + ',' + winner + ',' + str(secondScore) + ',' + str(firstScore) + ',' + thisMap)
+    return line
+    
+#Only run this if you want new data (Will overwrite the previoius csv file)
+def scrape(pages):
+    csvContents=''
+    for i in range(pages):
+        hltvUrl = "http://www.hltv.org/results/"
+        if i==0:
+            csvFile = open("csgo_results.csv",'w')
+            csvFile.write("Team 1, Team 2, Winning Team, Winning Score, Losing Score, Map Played")
+        if i>0:
+            hltvUrl+=(str((i)*50)+'/')
+        print("Getting data from: " + hltvUrl)
+        r  = requests.get(hltvUrl)
+        data = r.text
+        soup = BeautifulSoup(data,"lxml")
+        results=soup.find_all("div", {"class": "matchListBox"},limit=50)
+        for j in results:
+            result=(str(j.text).splitlines())
+            csvContents+=extractDataIntoCondensedList(result)
+    csvFile.write(csvContents)
+    csvFile.close()
