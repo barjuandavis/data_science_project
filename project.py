@@ -250,12 +250,12 @@ def mapNames():
     for i in maps:
         print(i)
 
-#Train data on 75% of the dataset and test on the rest 25%
+#Train data on 60% of the dataset and test on the rest 40%
 def accuracy():
     if os.path.isfile('filtered_top20.csv'):
         data_set = getDataReady()
         train_data = []
-        for i in range(int(len(data_set)*0.8)):
+        for i in range(int(len(data_set)*0.1)):
             train_data.append(data_set[i])
             
         tree = build_tree_id3(train_data)
@@ -263,7 +263,7 @@ def accuracy():
         data = readCsv("filtered_top20.csv")
         counter = 0
         counter2 = 0
-        for i in range(int(len(data_set)*0.8), len(data)):
+        for i in range(int(len(data_set)*0.1), len(data)):
             team1 = data[i][0]
             team2 = data[i][1]
             m = data[i][2]
@@ -281,7 +281,7 @@ def accuracy():
             if not boolean[classify(tree,userInputStats(team1, team2, m))] and not winner:
                 counter2 += 1
         
-        acc = ((counter + counter2) / ((len(data)) - (int(len(data_set)*0.8))))*100
+        acc = ((counter + counter2) / ((len(data)) - (int(len(data_set)*0.1))))*100
         print("The algorithm is {}% accurate.".format(acc))
     else:
         print('\"filtered_top20.csv\" was not found. Please scrape for data before attempting to predict')
