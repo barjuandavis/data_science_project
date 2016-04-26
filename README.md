@@ -1,6 +1,4 @@
-# data_science_project
-CS 298 Data Science Project about CS GO data
+# CS:GO Game Predictor
 
-Teams: fnatic and NIP
-Variables: map, %win on that map, pistol round win %, average player rating
-maps: dust2, mirage, cache, train, inferno
+Download all the .py files. Instructions about how to predict will be provided when you run the program
+(Note: download the .csv files if you don't want to scrape data yourself. The main data set, csgo_results.csv, has data from 200 pages)
