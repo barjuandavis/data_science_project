@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Apr 24 15:49:02 2016
-
-@author: rishijavia
-"""
 from bs4 import BeautifulSoup
 import requests
 
 #top 20 teams
-
 top_20 = [
 {'name':'Natus Vincere', 'id':4608},
 {'name':'Luminosity', 'id':6290},
@@ -32,6 +26,7 @@ top_20 = [
 {'name':'E-frag.net', 'id':6226}
 ]
 
+#map pool
 maps=[
 {'name':'dust2', 'id':31},
 {'name':'mirage', 'id':32},
@@ -42,7 +37,7 @@ maps=[
 {'name':'overpass', 'id':40},
 ]
 
-
+#Scrapes map data for every team in the top 20 and every map in our map pool
 def scrape_map_stats():
     csv = ''
     csvFile = open("map_data.csv",'w')
@@ -85,6 +80,7 @@ def scrape_map_stats():
     csvFile.write(csv)
     csvFile.close
 
+#Converts extracted data into a csv format for csgo_results.csv
 def extractDataIntoCondensedList(match):
     line=''
     thisMap=(match[2].replace(' - ', ' ').split(' '))[0]
@@ -108,7 +104,7 @@ def scrape(pages):
         hltvUrl = "http://www.hltv.org/results/"
         if i==0:
             csvFile = open("csgo_results.csv",'w')
-            csvFile.write("Team 1, Team 2, Winning Team, Winning Score, Losing Score, Map Played")
+            csvFile.write("Team 1,Team 2,Winning Team,Winning Score,Losing Score,Map Played")
         if i>0:
             hltvUrl+=(str((i)*50)+'/')
         print("Getting data from: " + hltvUrl)

@@ -3,8 +3,9 @@ from scraper import scrape_map_stats
 from scraper import scrape
 from decision_trees import build_tree_id3
 from decision_trees import classify
+import os.path, csv, random
 
-#Hardcoded Data
+#Hard coded Team Data
 teams=[	  {'Team Name':'Natus Vincere','Team Rank':1,'Team id':4608,'KD':1.07, 'Rating':1.044},
 		  {'Team Name':'Luminosity','Team Rank':2,'Team id':6290,'KD':1.14, 'Rating':1.106},
 		  {'Team Name':'fnatic','Team Rank':3,'Team id':4991,'KD':1.12, 'Rating':1.084},
@@ -25,47 +26,53 @@ teams=[	  {'Team Name':'Natus Vincere','Team Rank':1,'Team id':4608,'KD':1.07, '
 		  {'Team Name':'FaZe','Team Rank':18,'Team id':6667,'KD':0.99, 'Rating':1.046},
 		  {'Team Name':'Gambit','Team Rank':19,'Team id':6651,'KD':1.00, 'Rating':1.018},
 		  {'Team Name':'E-frag.net','Team Rank':20,'Team id':6226,'KD':1.09, 'Rating':1.05}]
-    
-csgoData=[]
 
+maps = ["dust2","mirage","inferno","cache","train","cobblestone","overpass"]
+#csgoData=[]
+
+#Checks if a team is part of the top 20
 def isTop20(input):
     for i in range(len(teams)):
         if (input == teams[i]['Team Name']):
             return True
     return False
 
+#Checks if a team is part of our map pool
 def isMap(input):
-    maps = ["dust2","mirage","inferno","cache","train","cobblestone","overpass"]
     if input in maps:
         return True
     return False
 
+#Returns team's rating from hard coded data
 def get_rating(input):
     for i in range(len(teams)):
         if(input == teams[i]['Team Name']):
             return teams[i]['Rating']
     return 0
 
+#Returns team's HLTV ranking from hard coded data
 def get_rank(input):
     for i in range(len(teams)):
         if(input == teams[i]['Team Name']):
             return teams[i]['Team Rank']
     return 0 
-    
+
+#Returns team's KD from hard coded data
 def get_kd(input):
     for i in range(len(teams)):
         if(input == teams[i]['Team Name']):
             return teams[i]['KD']
     return 0
-    
 
+#Function to read CSV file and return it as a list
 def readCsv(fileName):
     with open(fileName, 'r') as f:
         reader = csv.reader(f, delimiter=',')
         next(reader)
         rows = [r for r in reader]
     return rows
-    
+
+#Returns a team's stats for a particular map
 def returnMapStats(t, m):
     rows=readCsv('map_data.csv')
     data = []
@@ -84,11 +91,12 @@ def returnMapStats(t, m):
             data.append(first_death)
             return data
             
+#Creates a new CSV file with data from only the top 20 teams
 def filterCSV():
     og_data = readCsv("csgo_results.csv")
     csv=''
-    csvFile = open("filterd_top20.csv",'w')
-    csvFile.write("Team 1,Team 2,Map,Winner,Team 1 rank, Team 2 rank,Team 1 Rating,Team 2 Rating,Team 1 KD,Team 2 KD,Team 1 Map Win %,Team 2 Map Win %,Team 1 Pistol Round Win %,Team 2 Pistol Round Win %,Team 1 first kill win %,Team 2 first kill win %,Team 1 first death win %,Team 2 first death win %")
+    csvFile = open("filtered_top20.csv",'w')
+    csvFile.write("Team 1,Team 2,Map,Winner,Team 1 rank,Team 2 rank,Team 1 Rating,Team 2 Rating,Team 1 KD,Team 2 KD,Team 1 Map Win %,Team 2 Map Win %,Team 1 Pistol Round Win %,Team 2 Pistol Round Win %,Team 1 first kill win %,Team 2 first kill win %,Team 1 first death win %,Team 2 first death win %")
     for data in og_data:
         if (isTop20(data[0]) and isTop20(data[1]) and isMap(data[5])):
             team1name = data[0]
@@ -118,14 +126,20 @@ def filterCSV():
     csvFile.write(csv)
     csvFile.close
 
+#Returns the names of the variables stored in our data file
 def getVariables():
-    with open("filterd_top20.csv", 'r') as f:
-        reader = csv.reader(f, delimiter=',')
-        rows = [r for r in reader]
-        return rows[0]
-        
+    if os.path.isfile("filtered_top20.csv"):
+        with open("filtered_top20.csv", 'r') as f:
+            reader = csv.reader(f, delimiter=',')
+            rows = [r for r in reader]
+            for i in rows[0]:
+                print(i)
+    else:
+        print('\"filtered_top20.csv\" was not found.')
+
+#Sets up training data for Decision tree Algorithm
 def getDataReady():
-    data = readCsv("filterd_top20.csv")
+    data = readCsv("filtered_top20.csv")
     dictio = []
     winner = []
     for i in range(len(data)):
@@ -179,7 +193,8 @@ def getDataReady():
         
     inputs = [(c,a) for c,a in zip(dictio, winner)]
     return inputs
-
+    
+#Prepares user entered data for use with Decision tree
 def userInputStats(team1, team2, m):
     map_data1 = returnMapStats(team1, m)
     map_data2 = returnMapStats(team2, m)
@@ -222,10 +237,58 @@ def userInputStats(team1, team2, m):
     'Team 1 has better rank':rank
     }
     return output
-    
-    
-#Main function to run all the code by itslef, add number of pages to scrape
-def main(pages, team1, team2, m):
+
+#Print out list of top 20 team names
+def teamNames():
+    print("Team Names:")
+    for i in teams:
+        print(i['Team Name'])
+        
+#Print out maps in our map pool
+def mapNames():
+    print("Map Names:")
+    for i in maps:
+        print(i)
+
+#Train data on 75% of the dataset and test on the rest 25%
+def accuracy():
+    if os.path.isfile('filtered_top20.csv'):
+        data_set = getDataReady()
+        train_data = []
+        for i in range(int(len(data_set)*0.8)):
+            train_data.append(data_set[i])
+            
+        tree = build_tree_id3(train_data)
+        
+        data = readCsv("filtered_top20.csv")
+        counter = 0
+        counter2 = 0
+        for i in range(int(len(data_set)*0.8), len(data)):
+            team1 = data[i][0]
+            team2 = data[i][1]
+            m = data[i][2]
+            
+            #make winner to true if team 1 won the game            
+            winner = False
+            if(data[i][3] == data[i][0]):
+                winner = True
+            boolean = {True : team1, False : team2} 
+            
+            #test if our predicted result is same is winner of the game
+            if boolean[classify(tree,userInputStats(team1, team2, m))] and winner:
+                counter += 1
+            
+            if not boolean[classify(tree,userInputStats(team1, team2, m))] and not winner:
+                counter2 += 1
+        
+        acc = ((counter + counter2) / ((len(data)) - (int(len(data_set)*0.8))))*100
+        print("The algorithm is {}% accurate.".format(acc))
+    else:
+        print('\"filtered_top20.csv\" was not found. Please scrape for data before attempting to predict')
+
+#Main function to run all the code by itself, add number of pages to scrape
+def predict(pages, team1, team2, m):
+    #make sure we have data on these teams
     if not(isTop20(team1)):
         print("Team 1 is not a top 20 team")
         return
@@ -235,18 +298,28 @@ def main(pages, team1, team2, m):
     if not(isMap(m)):
         print("The map is not in our pool")
         return
-    print("Scraping process will take some time, please be patient")
-    print("**********Scraping Map Results now**********")
-    scrape(pages)
-    print("**********Scraping Map Stats now**********")
-    scrape_map_stats()
-    print("**********Filtering Data now**********")
-    filterCSV()
-    print("**********Generating Data now**********")
-    data = getDataReady()
-    tree = build_tree_id3(data)
+    if pages>0:
+        print("Scraping process will take some time, please be patient")
+        print("**********Scraping Map Results now**********")
+        scrape(pages)
+        print("**********Scraping Map Stats now**********")
+        scrape_map_stats()
+        print("**********Filtering Data now**********")
+        filterCSV()
+        print("**********Generating Data now**********")
+    #Make sure we have a "filtered_top20.csv" file to examine (in case the user doesn't scrape)
+    if os.path.isfile('filtered_top20.csv'):
+        data = getDataReady()
+        tree = build_tree_id3(data)
+        boolean = {True : team1, False : team2}
+        print("{} would win.".format(boolean[classify(tree,userInputStats(team1, team2, m))]))  
+    else:
+        print('\"filtered_top20.csv\" was not found. Please scrape for data before attempting to predict')
     
-    boolean = {True : team1, False : team2}
-    print("{} would win.".format(boolean[classify(tree,userInputStats(team1, team2, m))]))    
-    
-    
+#User instructions
+print('CSGO Match Predictor.\n\nTo use call the predict function using these values.\n\npredict(# of HLTV pages to scrape data from, Team 1 name, Team 2 name, Map to be Played)\n')
+print('If pages is set to 0, data will not be scraped and any previously scraped data will be used.\n')
+print('This program is designed to predict from the top 20 current teams (As Ranked by HLTV)\nand the maps in the current map pool.\n')
+print('To see a list of the teams, call the \"teamNames()\" function.\n')
+print('To see a list of maps, call the \"mapNames()\" function.\n')
+print('Team and Map names are case sensitive.\n')
