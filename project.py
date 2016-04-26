@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from map_stats import scrape_map_stats
-from map_stats import scrape
+from scraper import scrape_map_stats
+from scraper import scrape
 from decision_trees import build_tree_id3
 from decision_trees import classify
 
