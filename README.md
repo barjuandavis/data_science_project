@@ -44,21 +44,38 @@ Scrape is the main function of the program and takes an integer as an argument f
 These functions are taken directly taken from chapter 17 Gurus on making decision trees.
 
 ##project.py
-###isTop20(inpunt)
-###isMap(input)
-###get_rating(input)
-###get_kd(input)
-###readCsv(fileName)
-###returnMapStats(t, m)
-###filterCSV()
-###getVariables()
-###getDataReady()
-###userInputStats(team1, team2, m)
-###teamNames()
-###mapNames()
-###accuracy()
-###predict(pages, team1, team2, m)
+The program starts by printing user instructions on how to use the predictor. 
 
+###isTop20(inpunt)
+Takes a team name as a string and returns true if it is in the hard coded top 20.
+###isMap(input)
+Takes a map name as a string and returns true if it is one of the chosen maps.
+###get_rating(input)
+Takes a team name as a string and returns the rating from collected data.
+###get_rank(input)
+Takes a team name as a string and returns its hltv rank.
+###get_kd(input)
+Takes a team name as a string and returns the kill to death ratio from collected data.
+###readCsv(fileName)
+Takes a CSV file and returns a list of lists where each item is in a list, and those lists are items in the larger list.
+###returnMapStats(t, m)
+Takes a team name t and map nam m as strings and returns all map stats gathered by 'scrape_map_stats()' and returns a list of stats
+###filterCSV()
+creates a new CSV of data that filters out all games that include teams not in the top 20 or played on maps not in our group
+###getVariables()
+Prints out the variables used in making the decision tree.
+###getDataReady()
+Turns the collected data into the format needed to make the decsision tree made from the book. This means changing numbers into booleans. We set team one having the better stat as true. Then it builds a decision tree based off the data
+###userInputStats(team1, team2, m)
+Takes a team one team1, team two team2 and map m as strings and creates an input vector. This fake match will be match will be used to predict the outcome
+###teamNames()
+Prints the team names in order of hltv ranking
+###mapNames()
+Prints map names.
+###accuracy()
+Accuracy takes the scraped data and trains the model on 60% of the data while testing it on the other 40%. Returns a percentage of games correctly predicted.
+###predict(pages, team1, team2, m)
+This is the main function of file. The function takes team one team1, team two team2 and map m as strings and pages as an int. If pages is 0, previously scraped data will be used, otherwise the program will scrape the ammount of pages of most recent data for matches played.The program will also reprompt you to enter an input vector if the input vector is not possible (map or one of the teams not from the specified pool). The function will make a prediction on what team will win given the input and print it to the console.
 
 #Notes
 This program is only designed to work with the current (at the time of writing) top 20 teams, as rated by HLTV
