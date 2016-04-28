@@ -3,7 +3,7 @@ from scraper import scrape_map_stats
 from scraper import scrape
 from decision_trees import build_tree_id3
 from decision_trees import classify
-import os.path, csv
+import os.path, csv, random
 
 #Hard coded Team Data
 teams=[	  {'Team Name':'Natus Vincere','Team Rank':1,'Team id':4608,'KD':1.07, 'Rating':1.044},
@@ -249,6 +249,42 @@ def mapNames():
     print("Map Names:")
     for i in maps:
         print(i)
+
+#Train data on 60% of the dataset and test on the rest 40%
+def accuracy():
+    if os.path.isfile('filtered_top20.csv'):
+        data_set = getDataReady()
+        train_data = []
+        for i in range(int(len(data_set)*0.1)):
+            train_data.append(data_set[i])
+            
+        tree = build_tree_id3(train_data)
+        
+        data = readCsv("filtered_top20.csv")
+        counter = 0
+        counter2 = 0
+        for i in range(int(len(data_set)*0.1), len(data)):
+            team1 = data[i][0]
+            team2 = data[i][1]
+            m = data[i][2]
+            
+            #make winner to true if team 1 won the game            
+            winner = False
+            if(data[i][3] == data[i][0]):
+                winner = True
+            boolean = {True : team1, False : team2} 
+            
+            #test if our predicted result is same is winner of the game
+            if boolean[classify(tree,userInputStats(team1, team2, m))] and winner:
+                counter += 1
+            
+            if not boolean[classify(tree,userInputStats(team1, team2, m))] and not winner:
+                counter2 += 1
+        
+        acc = ((counter + counter2) / ((len(data)) - (int(len(data_set)*0.1))))*100
+        print("The algorithm is {}% accurate.".format(acc))
+    else:
+        print('\"filtered_top20.csv\" was not found. Please scrape for data before attempting to predict')
 
 #Main function to run all the code by itself, add number of pages to scrape
 def predict(pages, team1, team2, m):

@@ -1,4 +1,3 @@
-#Written by Joel Grus
 from collections import Counter, defaultdict
 from functools import partial
 import math, random
