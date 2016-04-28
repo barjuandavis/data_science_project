@@ -3,7 +3,7 @@ from scraper import scrape_map_stats
 from scraper import scrape
 from decision_trees import build_tree_id3
 from decision_trees import classify
-import os.path, csv, random
+import os.path, csv, random, pprint
 
 #Hard coded Team Data
 teams=[	  {'Team Name':'Natus Vincere','Team Rank':1,'Team id':4608,'KD':1.07, 'Rating':1.044},
@@ -250,12 +250,12 @@ def mapNames():
     for i in maps:
         print(i)
 
-#Train data on 60% of the dataset and test on the rest 40%
-def accuracy():
+#Train data on 75% of the dataset and test on the rest 25%
+def accuracy(thresh):
     if os.path.isfile('filtered_top20.csv'):
         data_set = getDataReady()
         train_data = []
-        for i in range(int(len(data_set)*0.1)):
+        for i in range(int(len(data_set)*thresh)):
             train_data.append(data_set[i])
             
         tree = build_tree_id3(train_data)
@@ -263,7 +263,7 @@ def accuracy():
         data = readCsv("filtered_top20.csv")
         counter = 0
         counter2 = 0
-        for i in range(int(len(data_set)*0.1), len(data)):
+        for i in range(int(len(data_set)*thresh), len(data)):
             team1 = data[i][0]
             team2 = data[i][1]
             m = data[i][2]
@@ -281,11 +281,12 @@ def accuracy():
             if not boolean[classify(tree,userInputStats(team1, team2, m))] and not winner:
                 counter2 += 1
         
-        acc = ((counter + counter2) / ((len(data)) - (int(len(data_set)*0.1))))*100
+        acc = ((counter + counter2) / ((len(data)) - (int(len(data_set)*thresh))))*100
         print("The algorithm is {}% accurate.".format(acc))
+        
     else:
         print('\"filtered_top20.csv\" was not found. Please scrape for data before attempting to predict')
-
+    
 #Main function to run all the code by itself, add number of pages to scrape
 def predict(pages, team1, team2, m):
     #make sure we have data on these teams
@@ -311,6 +312,8 @@ def predict(pages, team1, team2, m):
     if os.path.isfile('filtered_top20.csv'):
         data = getDataReady()
         tree = build_tree_id3(data)
+        #pp = pprint.PrettyPrinter(indent=4)
+        #pp.pprint(tree)
         boolean = {True : team1, False : team2}
         print("{} would win.".format(boolean[classify(tree,userInputStats(team1, team2, m))]))  
     else:
@@ -323,3 +326,4 @@ print('This program is designed to predict from the top 20 current teams (As Ran
 print('To see a list of the teams, call the \"teamNames()\" function.\n')
 print('To see a list of maps, call the \"mapNames()\" function.\n')
 print('Team and Map names are case sensitive.\n')
+
