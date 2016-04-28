@@ -46,7 +46,7 @@ These functions are taken directly taken from chapter 17 Gurus on making decisio
 ##project.py
 The program starts by printing user instructions on how to use the predictor. 
 
-###isTop20(inpunt)
+###isTop20(input)
 Takes a team name as a string and returns true if it is in the hard coded top 20.
 ###isMap(input)
 Takes a map name as a string and returns true if it is one of the chosen maps.
@@ -73,7 +73,7 @@ Prints the team names in order of hltv ranking
 ###mapNames()
 Prints map names.
 ###accuracy()
-Accuracy takes the scraped data and trains the model on 60% of the data while testing it on the other 40%. Returns a percentage of games correctly predicted.
+Accuracy takes the scraped data and trains the model on a user inputted percentage of the data while testing it on the remaining data. Returns a percentage of games correctly predicted.
 ###predict(pages, team1, team2, m)
 This is the main function of file. The function takes team one team1, team two team2 and map m as strings and pages as an int. If pages is 0, previously scraped data will be used, otherwise the program will scrape the ammount of pages of most recent data for matches played.The program will also reprompt you to enter an input vector if the input vector is not possible (map or one of the teams not from the specified pool). The function will make a prediction on what team will win given the input and print it to the console.
 
